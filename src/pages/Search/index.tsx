@@ -64,6 +64,13 @@ export default function SearchPage() {
     )
   }
 
+  const getOccupationName = (type: string) => {
+    const map: Record<string, string> = {
+      'AGRICULTURE': '农业'
+    }
+    return map[type] || type
+  }
+
   return (
     <div className="search-container">
       <div className="search-header">
@@ -119,11 +126,11 @@ export default function SearchPage() {
                     />
                   }
                   description={
-                    <div className="worker-desc">
-                      <div>{worker.nftTitle}</div>
+                    <div className="worker-desc-wrapper">
+                      <div className="worker-title">{getOccupationName(worker.occupationType)}</div>
                       {worker.occupationType === 'AGRICULTURE' && (
                         <div className="worker-hobby">
-                          提高搜寻的食物产出数量 + {worker.hobby}%
+                          提高搜寻的食物产出数量 + {(worker.hobby * 100).toFixed(0)}%
                         </div>
                       )}
                     </div>
