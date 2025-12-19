@@ -9,6 +9,8 @@ export interface Worker {
   status: string
   statusDetail: string
   working: boolean
+  occupationType: string
+  hobby: number
 }
 
 export interface SearchPreData {

@@ -4,7 +4,7 @@ import CryptoJS from 'crypto-js'
 import { storage } from '@/utils/storage'
 
 const request = axios.create({
-  baseURL: 'https://tapi.metaart.store',
+  baseURL: 'https://api.metaart.store',
   timeout: 10000
 })
 

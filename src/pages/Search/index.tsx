@@ -118,7 +118,16 @@ export default function SearchPage() {
                       className="worker-avatar"
                     />
                   }
-                  description={worker.nftTitle}
+                  description={
+                    <div className="worker-desc">
+                      <div>{worker.nftTitle}</div>
+                      {worker.occupationType === 'AGRICULTURE' && (
+                        <div className="worker-hobby">
+                          提高搜寻的食物产出数量 + {worker.hobby}%
+                        </div>
+                      )}
+                    </div>
+                  }
                 >
                   {worker.name}
                 </List.Item>
