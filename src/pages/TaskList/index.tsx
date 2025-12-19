@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { Card } from 'antd-mobile'
 import { useAuthStore } from '@/store/useAuthStore'
 import './index.css'
 
@@ -7,15 +6,6 @@ export default function TaskList() {
   const navigate = useNavigate()
   const userInfo = useAuthStore((state) => state.userInfo)
   const logout = useAuthStore((state) => state.logout)
-
-  const tasks = [
-    {
-      id: 'island',
-      title: '据点管理',
-      description: '查看据点状态,收取产出,补充资源',
-      path: '/island'
-    }
-  ]
 
   const handleLogout = () => {
     logout()
