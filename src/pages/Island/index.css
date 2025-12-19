@@ -1,0 +1,151 @@
+.island-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e8f5e9 0%, #fff3e0 100%);
+}
+
+.island-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.island-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.island-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.island-list {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.island-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.island-card-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.island-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.island-info {
+  flex: 1;
+}
+
+.island-name {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.island-number {
+  margin: 0;
+  font-size: 12px;
+  color: #999;
+}
+
+.island-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.island-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #999;
+}
+
+.stat-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.status-running {
+  color: #2e7d32;
+}
+
+.status-stopped {
+  color: #d32f2f;
+}
+
+.island-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.island-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.island-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.island-btn-primary {
+  background: #2e7d32;
+  color: white;
+}
+
+.island-btn-primary:hover:not(:disabled) {
+  background: #1b5e20;
+}
+
+.island-btn-success {
+  background: #66bb6a;
+  color: white;
+}
+
+.island-btn-success:hover:not(:disabled) {
+  background: #4caf50;
+}
+
+.island-btn-warning {
+  background: #ff9800;
+  color: white;
+}
+
+.island-btn-warning:hover:not(:disabled) {
+  background: #f57c00;
+}
