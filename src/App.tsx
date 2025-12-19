@@ -5,6 +5,7 @@ import { storage } from './utils/storage'
 import Login from './pages/Login'
 import TaskList from './pages/TaskList'
 import Island from './pages/Island'
+import Search from './pages/Search'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = storage.getToken()
@@ -35,6 +36,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Island />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <ProtectedRoute>
+              <Search />
             </ProtectedRoute>
           }
         />
