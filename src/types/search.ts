@@ -1,4 +1,13 @@
-import type { ApiResponse } from './island'
+import type { ApiResponse } from './common'
+
+/**
+ * 职业类型枚举
+ */
+export enum OccupationType {
+  AGRICULTURE = 'AGRICULTURE',
+  FORESTRY = 'FORESTRY',
+  MINING = 'MINING',
+}
 
 export interface Worker {
   id: number
@@ -9,7 +18,7 @@ export interface Worker {
   status: string
   statusDetail: string
   working: boolean
-  occupationType: string
+  occupationType: OccupationType
   hobby: number
 }
 

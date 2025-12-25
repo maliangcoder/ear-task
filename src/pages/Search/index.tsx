@@ -1,58 +1,30 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PullToRefresh, Button, Toast, DotLoading, List, Card } from 'antd-mobile'
 import { LeftOutline } from 'antd-mobile-icons'
-import { searchApi } from '@/api/search'
 import { useSearchStore } from '@/store/useSearchStore'
+import { useBatchSearch } from '@/hooks/useBatchSearch'
+import { formatOccupationName, formatPercent } from '@/utils/format'
+import { OCCUPATION_COLORS } from '@/constants'
 import './index.css'
 
 export default function SearchPage() {
   const navigate = useNavigate()
-  const { searchInfo, loading, setSearchInfo, setLoading } = useSearchStore()
-  const [searching, setSearching] = useState(false)
-
-  const fetchSearchInfo = async () => {
-    setLoading(true)
-    try {
-      const res = await searchApi.getSearchPre()
-      setSearchInfo(res.data)
-    } catch (error) {
-      console.error('获取搜寻信息失败:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { searchInfo, loading, fetchSearchInfo } = useSearchStore()
+  const { searching, executeBatchSearch } = useBatchSearch()
 
   useEffect(() => {
     fetchSearchInfo()
-  }, [])
+  }, [fetchSearchInfo])
 
   const handleSearch = async () => {
     if (!searchInfo || searchInfo.remainingFreeSearchNum <= 0) {
       Toast.show('暂无可用搜寻次数')
       return
     }
-
-    setSearching(true)
-    const totalToSearch = searchInfo.remainingFreeSearchNum
-    let successCount = 0
-
-    try {
-      for (let i = 0; i < totalToSearch; i++) {
-        const res = await searchApi.search({ freeSearch: true })
-        if (res.data) {
-          successCount++
-        }
-      }
-      Toast.show({
-        icon: 'success',
-        content: `成功执行 ${successCount} 次搜寻`
-      })
+    const result = await executeBatchSearch(searchInfo.remainingFreeSearchNum)
+    if (result.success) {
       fetchSearchInfo()
-    } catch (error) {
-      console.error('执行搜寻失败:', error)
-    } finally {
-      setSearching(false)
     }
   }
 
@@ -64,11 +36,18 @@ export default function SearchPage() {
     )
   }
 
-  const getOccupationName = (type: string) => {
-    const map: Record<string, string> = {
-      'AGRICULTURE': '农业'
+  const renderWorkerHobby = (worker: any) => {
+    if (worker.occupationType === 'AGRICULTURE') {
+      return (
+        <div
+          className="worker-hobby"
+          style={{ backgroundColor: OCCUPATION_COLORS.AGRICULTURE }}
+        >
+          提高搜寻的食物产出数量 + {formatPercent(worker.hobby)}
+        </div>
+      )
     }
-    return map[type] || type
+    return null
   }
 
   return (
@@ -127,12 +106,8 @@ export default function SearchPage() {
                   }
                   description={
                     <div className="worker-desc-wrapper">
-                      <div className="worker-title">{getOccupationName(worker.occupationType)}</div>
-                      {worker.occupationType === 'AGRICULTURE' && (
-                        <div className="worker-hobby">
-                          提高搜寻的食物产出数量 + {(worker.hobby * 100).toFixed(0)}%
-                        </div>
-                      )}
+                      <div className="worker-title">{formatOccupationName(worker.occupationType)}</div>
+                      {renderWorkerHobby(worker)}
                     </div>
                   }
                 >

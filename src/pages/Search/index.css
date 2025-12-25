@@ -1,3 +1,11 @@
+/* CSS 变量定义 */
+:root {
+  --avatar-size-medium: 44px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 24px;
+}
+
 .search-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f9eb 0%, #e1f3d8 100%);
@@ -28,7 +36,7 @@
 }
 
 .search-stat-card {
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
 }
@@ -70,12 +78,12 @@
 .search-main-btn {
   height: 48px;
   font-size: 16px;
-  border-radius: 24px;
+  border-radius: var(--border-radius-xl);
 }
 
 .worker-section {
   background: #fff;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
@@ -89,9 +97,9 @@
 }
 
 .worker-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
+  width: var(--avatar-size-medium);
+  height: var(--avatar-size-medium);
+  border-radius: var(--border-radius-md);
   object-fit: cover;
 }
 
@@ -131,4 +139,20 @@
   justify-content: center;
   align-items: center;
   height: 80vh;
+}
+
+/* 批量进度样式 */
+.batch-progress-content {
+  padding: 16px;
+  text-align: center;
+}
+
+.progress-text {
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.progress-current {
+  color: #1677ff;
 }
