@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback } from 'react'
-import { Modal, Toast } from 'antd-mobile'
+import { Toast } from 'antd-mobile'
 import { searchApi } from '@/api/search'
 import type { BatchProgress } from '@/types/common'
 
@@ -15,6 +15,20 @@ export interface UseBatchSearchResult {
   progress: BatchProgress | null
   /** 执行批量搜寻 */
   executeBatchSearch: (total: number) => Promise<{ success: boolean; progress: BatchProgress | null }>
+}
+
+/**
+ * 显示 Toast 并等待指定时间
+ */
+const showToastAndWait = (content: string, icon: 'success' | 'fail', duration: number): Promise<void> => {
+  return new Promise((resolve) => {
+    Toast.show({
+      icon,
+      content,
+      duration,
+      afterClose: () => resolve(),
+    })
+  })
 }
 
 export function useBatchSearch(): UseBatchSearchResult {
@@ -28,38 +42,39 @@ export function useBatchSearch(): UseBatchSearchResult {
     let successCount = 0
     let failCount = 0
 
-    // 显示进度 Modal
-    const modal = Modal.show({
-      title: '批量搜寻',
-      content: (
-        <div className="batch-progress-content">
-          <div>正在执行搜寻...</div>
-          <div className="progress-text">
-            <span className="progress-current">0</span>/{total}
-          </div>
-        </div>
-      ),
-      closeOnMaskClick: false,
-    })
-
     try {
       for (let i = 0; i < total; i++) {
         const res = await searchApi.search({ freeSearch: true })
+
+        const currentStep = i + 1
         if (res.data) {
           successCount++
+          // 显示成功提示，停留 1.5 秒
+          await showToastAndWait(
+            `第 ${currentStep}/${total} 次搜寻成功`,
+            'success',
+            1500
+          )
         } else {
           failCount++
+          // 显示失败提示，停留 1.5 秒
+          await showToastAndWait(
+            `第 ${currentStep}/${total} 次搜寻失败`,
+            'fail',
+            1500
+          )
         }
 
-        // 更新进度显示
-        const progressEl = document.querySelector('.progress-current')
-        if (progressEl) {
-          progressEl.textContent = String(i + 1)
-        }
+        // 更新进度状态
+        setProgress({
+          current: currentStep,
+          total,
+          successCount,
+          failCount,
+        })
       }
 
-      modal.close()
-
+      // 显示最终汇总结果，停留 2 秒
       const finalProgress: BatchProgress = {
         current: total,
         total,
@@ -67,17 +82,17 @@ export function useBatchSearch(): UseBatchSearchResult {
         failCount,
       }
 
-      Toast.show({
-        icon: successCount > 0 ? 'success' : 'fail',
-        content: `成功 ${successCount} 次${failCount > 0 ? `，失败 ${failCount} 次` : ''}`,
-      })
+      await showToastAndWait(
+        `搜寻完成！成功 ${successCount} 次${failCount > 0 ? `，失败 ${failCount} 次` : ''}`,
+        successCount > 0 ? 'success' : 'fail',
+        2000
+      )
 
       return { success: successCount > 0, progress: finalProgress }
     } catch (error) {
-      modal.close()
       Toast.show({
         icon: 'fail',
-        content: '搜寻失败，请重试',
+        content: '搜寻异常，请重试',
       })
       return { success: false, progress: null }
     } finally {
