@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PullToRefresh, Dialog, Toast, DotLoading } from 'antd-mobile'
+import { Dialog, Toast, DotLoading } from 'antd-mobile'
 import { LeftOutline } from 'antd-mobile-icons'
 import { islandApi } from '@/api/island'
 import { useIslandStore } from '@/store/useIslandStore'
@@ -123,76 +123,74 @@ export default function IslandPage() {
         <div style={{ width: 24 }} />
       </div>
 
-      <PullToRefresh onRefresh={fetchIslands}>
-        <div className="island-list">
-          {islands.map((island) => {
-            const showStartButton = island.status === 'UN_USE'
-            return (
-              <div key={island.id} className="island-card">
-                <div className="island-card-header">
-                  <img src={island.nftMainImg} alt={island.nftTitle} className="island-img" />
-                  <div className="island-info">
-                    <h3 className="island-name">{island.nftTitle}</h3>
-                    <p className="island-number">{island.numberStr}</p>
-                  </div>
-                </div>
-
-                <div className="island-stats">
-                  <div className="island-stat-item">
-                    <span className="stat-label">运行时长</span>
-                    <span className="stat-value">{formatDuration(island.startTime)}</span>
-                  </div>
-                  <div className="island-stat-item">
-                    <span className="stat-label">状态</span>
-                    <span className={`stat-value ${showStartButton ? 'status-stopped' : 'status-running'}`}>
-                      {getStatusText(island)}
-                    </span>
-                  </div>
-                  <div className="island-stat-item">
-                    <span className="stat-label">可收取</span>
-                    <span className="stat-value">{island.produceNum.toFixed(2)}</span>
-                  </div>
-                  <div className="island-stat-item">
-                    <span className="stat-label">当前资源</span>
-                    <span className="stat-value">
-                      {island.resource} / {island.resourceLimit}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="island-actions">
-                  {showStartButton ? (
-                    <button
-                      className="island-btn island-btn-primary"
-                      onClick={() => handleStart(island)}
-                      disabled={operating}
-                    >
-                      启动
-                    </button>
-                  ) : (
-                    <>
-                      <button
-                        className="island-btn island-btn-success"
-                        onClick={() => handleCollect(island)}
-                        disabled={operating}
-                      >
-                        收取
-                      </button>
-                      <button
-                        className="island-btn island-btn-warning"
-                        onClick={() => handleSupplement(island)}
-                        disabled={operating}
-                      >
-                        补充
-                      </button>
-                    </>
-                  )}
+      <div className="island-list">
+        {islands.map((island) => {
+          const showStartButton = island.status === 'UN_USE'
+          return (
+            <div key={island.id} className="island-card">
+              <div className="island-card-header">
+                <img src={island.nftMainImg} alt={island.nftTitle} className="island-img" />
+                <div className="island-info">
+                  <h3 className="island-name">{island.nftTitle}</h3>
+                  <p className="island-number">{island.numberStr}</p>
                 </div>
               </div>
-            )
-          })}
-        </div>
-      </PullToRefresh>
+
+              <div className="island-stats">
+                <div className="island-stat-item">
+                  <span className="stat-label">运行时长</span>
+                  <span className="stat-value">{formatDuration(island.startTime)}</span>
+                </div>
+                <div className="island-stat-item">
+                  <span className="stat-label">状态</span>
+                  <span className={`stat-value ${showStartButton ? 'status-stopped' : 'status-running'}`}>
+                    {getStatusText(island)}
+                  </span>
+                </div>
+                <div className="island-stat-item">
+                  <span className="stat-label">可收取</span>
+                  <span className="stat-value">{island.produceNum.toFixed(2)}</span>
+                </div>
+                <div className="island-stat-item">
+                  <span className="stat-label">当前资源</span>
+                  <span className="stat-value">
+                    {island.resource} / {island.resourceLimit}
+                  </span>
+                </div>
+              </div>
+
+              <div className="island-actions">
+                {showStartButton ? (
+                  <button
+                    className="island-btn island-btn-primary"
+                    onClick={() => handleStart(island)}
+                    disabled={operating}
+                  >
+                    启动
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="island-btn island-btn-success"
+                      onClick={() => handleCollect(island)}
+                      disabled={operating}
+                    >
+                      收取
+                    </button>
+                    <button
+                      className="island-btn island-btn-warning"
+                      onClick={() => handleSupplement(island)}
+                      disabled={operating}
+                    >
+                      补充
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
