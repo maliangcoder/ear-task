@@ -17,20 +17,6 @@ export interface UseBatchSearchResult {
   executeBatchSearch: (total: number) => Promise<{ success: boolean; progress: BatchProgress | null }>
 }
 
-/**
- * 显示 Toast 并等待指定时间
- */
-const showToastAndWait = (content: string, icon: 'success' | 'fail', duration: number): Promise<void> => {
-  return new Promise((resolve) => {
-    Toast.show({
-      icon,
-      content,
-      duration,
-      afterClose: () => resolve(),
-    })
-  })
-}
-
 export function useBatchSearch(): UseBatchSearchResult {
   const [progress, setProgress] = useState<BatchProgress | null>(null)
   const [searching, setSearching] = useState(false)
