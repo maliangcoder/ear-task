@@ -49,23 +49,11 @@ export function useBatchSearch(): UseBatchSearchResult {
         const currentStep = i + 1
         if (res.data) {
           successCount++
-          // 显示成功提示，停留 1.5 秒
-          await showToastAndWait(
-            `第 ${currentStep}/${total} 次搜寻成功`,
-            'success',
-            1500
-          )
         } else {
           failCount++
-          // 显示失败提示，停留 1.5 秒
-          await showToastAndWait(
-            `第 ${currentStep}/${total} 次搜寻失败`,
-            'fail',
-            1500
-          )
         }
 
-        // 更新进度状态
+        // 更新进度状态（不等待 Toast）
         setProgress({
           current: currentStep,
           total,
@@ -74,7 +62,7 @@ export function useBatchSearch(): UseBatchSearchResult {
         })
       }
 
-      // 显示最终汇总结果，停留 2 秒
+      // 显示最终汇总结果
       const finalProgress: BatchProgress = {
         current: total,
         total,
@@ -82,11 +70,10 @@ export function useBatchSearch(): UseBatchSearchResult {
         failCount,
       }
 
-      await showToastAndWait(
-        `搜寻完成！成功 ${successCount} 次${failCount > 0 ? `，失败 ${failCount} 次` : ''}`,
-        successCount > 0 ? 'success' : 'fail',
-        2000
-      )
+      Toast.show({
+        icon: successCount > 0 ? 'success' : 'fail',
+        content: `搜寻完成！成功 ${successCount} 次${failCount > 0 ? `，失败 ${failCount} 次` : ''}`,
+      })
 
       return { success: successCount > 0, progress: finalProgress }
     } catch (error) {
