@@ -8,6 +8,12 @@ import { Toast } from 'antd-mobile'
 import { searchApi } from '@/api/search'
 import type { BatchProgress } from '@/types/common'
 
+/** 每次搜寻之间的延迟时间（毫秒） */
+const SEARCH_DELAY_MS = 800
+
+/** 延迟函数 */
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 export interface UseBatchSearchResult {
   /** 是否正在搜寻 */
   searching: boolean
@@ -30,6 +36,11 @@ export function useBatchSearch(): UseBatchSearchResult {
     let consecutiveFailCount = 0
 
     for (let i = 0; i < total; i++) {
+      // 非首次请求时添加延迟，避免请求频率过快
+      if (i > 0) {
+        await delay(SEARCH_DELAY_MS)
+      }
+
       try {
         const res = await searchApi.search({ freeSearch: true })
 
