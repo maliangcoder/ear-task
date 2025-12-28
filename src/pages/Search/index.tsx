@@ -60,6 +60,48 @@ export default function SearchPage() {
       </div>
 
       <div className="search-content">
+        {/* 产出信息卡片 */}
+        <Card className="output-card">
+          <div className="output-header">
+            <img
+              src={searchInfo?.searchOutputImgUrl}
+              alt={searchInfo?.searchOutputName}
+              className="output-icon"
+            />
+            <div className="output-info">
+              <div className="output-name">
+                {searchInfo?.searchOutputName || "未知产物"}
+              </div>
+              <div className="output-type">
+                {searchInfo?.searchOutputType || "资源"}
+              </div>
+            </div>
+          </div>
+          <div className="output-stats">
+            <div className="output-stat-item">
+              <div className="output-stat-value">
+                {searchInfo?.searchOutput || 0}
+              </div>
+              <div className="output-stat-label">单次产出</div>
+            </div>
+            <div className="output-stat-divider" />
+            <div className="output-stat-item">
+              <div className="output-stat-value highlight-orange">
+                {searchInfo?.searchOutputToday || 0}
+              </div>
+              <div className="output-stat-label">今日已获得</div>
+            </div>
+            <div className="output-stat-divider" />
+            <div className="output-stat-item">
+              <div className="output-stat-value highlight-green">
+                +{formatPercent(searchInfo?.searchAddition || 0)}
+              </div>
+              <div className="output-stat-label">产出加成</div>
+            </div>
+          </div>
+        </Card>
+
+        {/* 搜寻次数统计卡片 */}
         <Card className="search-stat-card">
           <div className="search-stats">
             <div className="search-stat-item">

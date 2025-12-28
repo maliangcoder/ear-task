@@ -35,6 +35,90 @@
   padding: 16px;
 }
 
+/* 产出信息卡片 */
+.output-card {
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, #f8fdf5 100%);
+  border: 1px solid rgba(103, 194, 58, 0.2);
+}
+
+.output-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #e8e8e8;
+  margin-bottom: 16px;
+}
+
+.output-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #f5f5f5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.output-info {
+  margin-left: 14px;
+  flex: 1;
+}
+
+.output-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.output-type {
+  font-size: 13px;
+  color: #67c23a;
+  background: rgba(103, 194, 58, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.output-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.output-stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.output-stat-value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.output-stat-value.highlight-orange {
+  color: #e6a23c;
+}
+
+.output-stat-value.highlight-green {
+  color: #67c23a;
+}
+
+.output-stat-label {
+  font-size: 12px;
+  color: #999;
+}
+
+.output-stat-divider {
+  width: 1px;
+  height: 36px;
+  background: #e8e8e8;
+}
+
 .search-stat-card {
   border-radius: var(--border-radius-lg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
