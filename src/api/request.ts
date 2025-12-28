@@ -51,9 +51,28 @@ request.interceptors.request.use(
   }
 )
 
+/** 处理 401 未授权，跳转登录页 */
+const handleUnauthorized = () => {
+  storage.clear()
+  Toast.show({
+    icon: 'fail',
+    content: '登录已过期，请重新登录'
+  })
+  // 使用 setTimeout 确保 Toast 显示后再跳转
+  setTimeout(() => {
+    window.location.href = '/ear-task/login'
+  }, 1000)
+}
+
 request.interceptors.response.use(
   (response) => {
     const { code, data, message } = response.data
+    
+    // 处理 401 未授权
+    if (code === 401) {
+      handleUnauthorized()
+      return Promise.reject(new Error(message || '请重新登录'))
+    }
     
     if (code < 0) {
       Toast.show({
@@ -72,6 +91,12 @@ request.interceptors.response.use(
     return response.data
   },
   (error) => {
+    // 处理 HTTP 401 状态码
+    if (error.response?.status === 401) {
+      handleUnauthorized()
+      return Promise.reject(error)
+    }
+    
     Toast.show({
       icon: 'fail',
       content: error.message || '网络错误'

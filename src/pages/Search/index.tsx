@@ -5,7 +5,6 @@ import { LeftOutline } from "antd-mobile-icons";
 import { useSearchStore } from "@/store/useSearchStore";
 import { useBatchSearch } from "@/hooks/useBatchSearch";
 import { formatOccupationName, formatPercent } from "@/utils/format";
-import { OCCUPATION_COLORS } from "@/constants";
 import type { Worker } from "@/types/search";
 import "./index.css";
 
@@ -38,17 +37,36 @@ export default function SearchPage() {
   }
 
   const renderWorkerHobby = (worker: Worker) => {
-    if (worker.occupationType === "AGRICULTURE") {
-      return (
-        <div
-          className="worker-hobby"
-          style={{ backgroundColor: OCCUPATION_COLORS.AGRICULTURE }}
-        >
-          提高搜寻的食物产出数量 + {formatPercent(worker.hobby)}
-        </div>
-      );
-    }
-    return null;
+    const hobbyConfig: Record<
+      string,
+      { className: string; icon: string; text: string }
+    > = {
+      AGRICULTURE: {
+        className: "agriculture",
+        icon: "🌾",
+        text: "食物产出",
+      },
+      FORESTRY: {
+        className: "forestry",
+        icon: "🌲",
+        text: "木材产出",
+      },
+      MINING: {
+        className: "mining",
+        icon: "⛏️",
+        text: "矿石产出",
+      },
+    };
+
+    const config = hobbyConfig[worker.occupationType];
+    if (!config || worker.hobby <= 0) return null;
+
+    return (
+      <div className={`worker-hobby ${config.className}`}>
+        <span className="worker-hobby-icon">{config.icon}</span>
+        {config.text} +{formatPercent(worker.hobby)}
+      </div>
+    );
   };
 
   return (

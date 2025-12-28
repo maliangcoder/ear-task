@@ -202,14 +202,40 @@
 }
 
 .worker-hobby {
-  color: #ff9800;
   font-size: 11px;
   font-weight: 500;
-  background: #fff8e1;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: 12px;
   margin-left: 8px;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 农业技能 - 清新绿色渐变 */
+.worker-hobby.agriculture {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  color: #2e7d32;
+  border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+/* 林业技能 - 自然棕绿 */
+.worker-hobby.forestry {
+  background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+  color: #558b2f;
+  border: 1px solid rgba(85, 139, 47, 0.2);
+}
+
+/* 矿业技能 - 金属质感 */
+.worker-hobby.mining {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  color: #e65100;
+  border: 1px solid rgba(230, 81, 0, 0.2);
+}
+
+.worker-hobby-icon {
+  font-size: 12px;
 }
 
 .empty-workers {
