@@ -63,12 +63,10 @@ request.interceptors.response.use(
       return Promise.reject(new Error(message || '请求失败'))
     }
     
+    // 当 data 为 false 时，直接返回响应，让调用方自行处理
+    // 不在这里弹 Toast，避免批量操作时弹出多个错误提示
     if (code === 0 && typeof data === 'boolean' && data === false) {
-      Toast.show({
-        icon: 'fail',
-        content: message || '操作失败'
-      })
-      return Promise.reject(new Error(message || '操作失败'))
+      return response.data
     }
     
     return response.data
