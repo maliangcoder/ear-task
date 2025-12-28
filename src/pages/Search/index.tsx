@@ -1,43 +1,44 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Button, Toast, DotLoading, List, Card } from 'antd-mobile'
-import { LeftOutline } from 'antd-mobile-icons'
-import { useSearchStore } from '@/store/useSearchStore'
-import { useBatchSearch } from '@/hooks/useBatchSearch'
-import { formatOccupationName, formatPercent } from '@/utils/format'
-import { OCCUPATION_COLORS } from '@/constants'
-import './index.css'
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Toast, DotLoading, List, Card } from "antd-mobile";
+import { LeftOutline } from "antd-mobile-icons";
+import { useSearchStore } from "@/store/useSearchStore";
+import { useBatchSearch } from "@/hooks/useBatchSearch";
+import { formatOccupationName, formatPercent } from "@/utils/format";
+import { OCCUPATION_COLORS } from "@/constants";
+import type { Worker } from "@/types/search";
+import "./index.css";
 
 export default function SearchPage() {
-  const navigate = useNavigate()
-  const { searchInfo, loading, fetchSearchInfo } = useSearchStore()
-  const { searching, executeBatchSearch } = useBatchSearch()
+  const navigate = useNavigate();
+  const { searchInfo, loading, fetchSearchInfo } = useSearchStore();
+  const { searching, executeBatchSearch } = useBatchSearch();
 
   useEffect(() => {
-    fetchSearchInfo()
-  }, [fetchSearchInfo])
+    fetchSearchInfo();
+  }, [fetchSearchInfo]);
 
   const handleSearch = async () => {
     if (!searchInfo || searchInfo.remainingFreeSearchNum <= 0) {
-      Toast.show('暂无可用搜寻次数')
-      return
+      Toast.show("暂无可用搜寻次数");
+      return;
     }
-    const result = await executeBatchSearch(searchInfo.remainingFreeSearchNum)
+    const result = await executeBatchSearch(searchInfo.remainingFreeSearchNum);
     if (result.success) {
-      fetchSearchInfo()
+      fetchSearchInfo();
     }
-  }
+  };
 
   if (loading && !searchInfo) {
     return (
       <div className="search-loading">
         <DotLoading color="primary" />
       </div>
-    )
+    );
   }
 
-  const renderWorkerHobby = (worker: any) => {
-    if (worker.occupationType === 'AGRICULTURE') {
+  const renderWorkerHobby = (worker: Worker) => {
+    if (worker.occupationType === "AGRICULTURE") {
       return (
         <div
           className="worker-hobby"
@@ -45,10 +46,10 @@ export default function SearchPage() {
         >
           提高搜寻的食物产出数量 + {formatPercent(worker.hobby)}
         </div>
-      )
+      );
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <div className="search-container">
@@ -63,26 +64,37 @@ export default function SearchPage() {
           <div className="search-stats">
             <div className="search-stat-item">
               <div className="stat-label">总免费次数</div>
-              <div className="stat-value">{searchInfo?.freeTotalSearchNum || 0}</div>
+              <div className="stat-value">
+                {searchInfo?.freeTotalSearchNum || 0}
+              </div>
             </div>
             <div className="search-stat-item">
               <div className="stat-label">今日已搜寻</div>
-              <div className="stat-value">{searchInfo?.todayUsedSearchNum || 0}</div>
+              <div className="stat-value">
+                {searchInfo?.todayUsedSearchNum || 0}
+              </div>
             </div>
             <div className="search-stat-item">
               <div className="stat-label">今日总次数</div>
-              <div className="stat-value">{searchInfo?.todayFreeSearchNum || 0}</div>
+              <div className="stat-value">
+                {searchInfo?.todayFreeSearchNum || 0}
+              </div>
             </div>
           </div>
           <div className="search-remaining-stat">
-            剩余可用次数: <span className="highlight">{searchInfo?.remainingFreeSearchNum || 0}</span>
+            剩余可用次数:{" "}
+            <span className="highlight">
+              {searchInfo?.remainingFreeSearchNum || 0}
+            </span>
           </div>
           <Button
             block
             color="primary"
             size="large"
             loading={searching}
-            disabled={searching || (searchInfo?.remainingFreeSearchNum || 0) <= 0}
+            disabled={
+              searching || (searchInfo?.remainingFreeSearchNum || 0) <= 0
+            }
             onClick={handleSearch}
             className="search-main-btn"
           >
@@ -105,7 +117,9 @@ export default function SearchPage() {
                 }
                 description={
                   <div className="worker-desc-wrapper">
-                    <div className="worker-title">{formatOccupationName(worker.occupationType)}</div>
+                    <div className="worker-title">
+                      {formatOccupationName(worker.occupationType)}
+                    </div>
                     {renderWorkerHobby(worker)}
                   </div>
                 }
@@ -113,12 +127,13 @@ export default function SearchPage() {
                 {worker.name}
               </List.Item>
             ))}
-            {(!searchInfo?.workerList || searchInfo.workerList.length === 0) && (
+            {(!searchInfo?.workerList ||
+              searchInfo.workerList.length === 0) && (
               <div className="empty-workers">暂无工人</div>
             )}
           </List>
         </div>
       </div>
     </div>
-  )
+  );
 }
