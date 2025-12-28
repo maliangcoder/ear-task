@@ -37,23 +37,17 @@ export default function SearchPage() {
   }
 
   const renderWorkerHobby = (worker: Worker) => {
-    const hobbyConfig: Record<
-      string,
-      { className: string; icon: string; text: string }
-    > = {
+    const hobbyConfig: Record<string, { className: string; text: string }> = {
       AGRICULTURE: {
         className: "agriculture",
-        icon: "🌾",
         text: "食物产出",
       },
       FORESTRY: {
         className: "forestry",
-        icon: "🌲",
         text: "木材产出",
       },
       MINING: {
         className: "mining",
-        icon: "⛏️",
         text: "矿石产出",
       },
     };
@@ -61,9 +55,18 @@ export default function SearchPage() {
     const config = hobbyConfig[worker.occupationType];
     if (!config || worker.hobby <= 0) return null;
 
+    // 使用搜寻产出的图片作为图标
+    const outputImg = searchInfo?.searchOutputImgUrl;
+
     return (
       <div className={`worker-hobby ${config.className}`}>
-        <span className="worker-hobby-icon">{config.icon}</span>
+        {outputImg && (
+          <img
+            src={outputImg}
+            alt={config.text}
+            className="worker-hobby-icon"
+          />
+        )}
         {config.text} +{formatPercent(worker.hobby)}
       </div>
     );

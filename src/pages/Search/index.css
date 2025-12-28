@@ -235,7 +235,11 @@
 }
 
 .worker-hobby-icon {
-  font-size: 12px;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .empty-workers {
