@@ -1,6 +1,6 @@
 .island-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #e8f5e9 0%, #fff3e0 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .island-loading {
@@ -15,8 +15,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .island-title {
@@ -26,93 +29,210 @@
   color: #333;
 }
 
-.island-list {
+.island-content {
   padding: 16px;
+}
+
+/* 操作面板 */
+.action-panel {
+  border-radius: 16px;
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.action-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #e8e8e8;
+  margin-bottom: 16px;
+}
+
+.action-stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.action-stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.action-stat-label {
+  font-size: 12px;
+  color: #999;
+}
+
+.action-stat-divider {
+  width: 1px;
+  height: 40px;
+  background: #e8e8e8;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 14px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn-collect {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+}
+
+.action-btn-collect:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4);
+}
+
+.action-btn-supplement {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.action-btn-supplement:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+}
+
+/* 据点列表 */
+.island-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .island-card {
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .island-card-header {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .island-img {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
   object-fit: cover;
 }
 
 .island-info {
   flex: 1;
+  min-width: 0;
 }
 
 .island-name {
-  margin: 0 0 4px 0;
-  font-size: 16px;
+  margin: 0;
+  font-size: 14px;
   font-weight: 600;
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .island-number {
-  margin: 0;
-  font-size: 12px;
+  margin: 2px 0 0 0;
+  font-size: 10px;
   color: #999;
 }
 
+.island-status-badge {
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.island-status-badge.status-running {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.island-status-badge.status-stopped {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+/* 据点统计 - 自适应网格布局 */
 .island-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 3px;
+}
+
+.island-stat-row {
+  display: contents;
 }
 
 .island-stat-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  padding: 4px 6px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  flex: 1;
 }
 
-.stat-label {
+.island-stat-item .stat-label {
   font-size: 12px;
   color: #999;
+  margin-bottom: 1px;
 }
 
-.stat-value {
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
+.island-stat-item .stat-value {
+  font-size: 12px;
 }
 
-.status-running {
-  color: #2e7d32;
+.island-stat-item .stat-value.highlight-green {
+  color: #68ce6d;
 }
 
-.status-stopped {
-  color: #d32f2f;
+.island-stat-item .stat-value.highlight-warning {
+  color: #ff9800;
 }
 
+/* 据点操作 */
 .island-actions {
-  display: flex;
-  gap: 12px;
+  margin-top: 10px;
 }
 
 .island-btn {
-  flex: 1;
-  padding: 10px 0;
+  width: 100%;
+  padding: 8px 0;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
@@ -124,28 +244,11 @@
 }
 
 .island-btn-primary {
-  background: #2e7d32;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
 .island-btn-primary:hover:not(:disabled) {
-  background: #1b5e20;
-}
-
-.island-btn-success {
-  background: #66bb6a;
-  color: white;
-}
-
-.island-btn-success:hover:not(:disabled) {
-  background: #4caf50;
-}
-
-.island-btn-warning {
-  background: #ff9800;
-  color: white;
-}
-
-.island-btn-warning:hover:not(:disabled) {
-  background: #f57c00;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }

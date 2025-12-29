@@ -46,3 +46,56 @@ export const calculateResourceNeeded = (currentResource: number): number => {
   const needed = 120 - currentResource
   return needed > 0 ? needed : 0
 }
+
+/**
+ * 计算当前能量可以运行多少小时
+ * @param resource 当前资源数量
+ * @param realResourceRate 实际消耗速率（每小时，接口返回的已计算加成）
+ */
+export const calculateRemainingHours = (
+  resource: number,
+  realResourceRate: number
+): number => {
+  if (realResourceRate <= 0) return 0
+  return resource / realResourceRate
+}
+
+/**
+ * 计算N点空晶能够补充多少小时的运行时间
+ * @param crystalAmount 空晶数量
+ * @param supplementRate 补充比例（1空晶->n资源）
+ * @param realResourceRate 实际消耗速率（每小时）
+ */
+export const calculateSupplementHours = (
+  crystalAmount: number,
+  supplementRate: number,
+  realResourceRate: number
+): number => {
+  if (realResourceRate <= 0) return 0
+  const resourceGain = crystalAmount * supplementRate
+  return resourceGain / realResourceRate
+}
+
+/**
+ * 计算需要补充多少空晶才能运行24小时
+ * @param currentResource 当前资源数量
+ * @param supplementRate 补充比例（1空晶->n资源）
+ * @param realResourceRate 实际消耗速率（每小时）
+ */
+export const calculateCrystalNeededFor24Hours = (
+  currentResource: number,
+  supplementRate: number,
+  realResourceRate: number
+): number => {
+  if (realResourceRate <= 0 || supplementRate <= 0) return 0
+  
+  // 24小时需要的资源
+  const resourceNeeded = realResourceRate * 24
+  // 还需要补充的资源
+  const resourceToAdd = resourceNeeded - currentResource
+  
+  if (resourceToAdd <= 0) return 0
+  
+  // 需要的空晶数量（向上取整）
+  return Math.ceil(resourceToAdd / supplementRate)
+}
