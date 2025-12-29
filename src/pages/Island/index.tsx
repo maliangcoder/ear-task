@@ -53,6 +53,14 @@ export default function IslandPage() {
     return sum + needed;
   }, 0);
 
+  // 统计未启动的据点数量
+  const notStartedCount = islands.filter(
+    (island) => island.status === "UN_USE"
+  ).length;
+
+  // 判断是否所有据点都是生产中
+  const allRunning = islands.length > 0 && notStartedCount === 0;
+
   // 一键收取所有
   const handleCollectAll = async () => {
     const collectableIslands = islands.filter(
@@ -289,17 +297,19 @@ export default function IslandPage() {
               <div className="action-stat-value">
                 {totalProduction.toFixed(2)}
               </div>
-              <div className="action-stat-label">可收取总产出</div>
+              <div className="action-stat-label">可收取产出</div>
             </div>
             <div className="action-stat-divider" />
             <div className="action-stat-item">
               <div className="action-stat-value">{totalCrystalNeeded}</div>
-              <div className="action-stat-label">需补充空晶</div>
+              <div className="action-stat-label">需补空晶</div>
             </div>
             <div className="action-stat-divider" />
             <div className="action-stat-item">
-              <div className="action-stat-value">{islands.length}</div>
-              <div className="action-stat-label">据点总数</div>
+              <div className="action-stat-value">
+                {islands.length - notStartedCount}/{islands.length}
+              </div>
+              <div className="action-stat-label">运行中</div>
             </div>
           </div>
           <div className="action-buttons">
@@ -315,7 +325,7 @@ export default function IslandPage() {
               onClick={handleSupplementAll}
               disabled={operating}
             >
-              {operating ? "处理中..." : "补充并启动"}
+              {operating ? "处理中..." : allRunning ? "一键补充" : "补充并启动"}
             </button>
           </div>
         </Card>
