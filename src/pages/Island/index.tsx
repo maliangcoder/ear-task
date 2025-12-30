@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, Toast, DotLoading, Card } from "antd-mobile";
 import { LeftOutline } from "antd-mobile-icons";
@@ -20,12 +20,24 @@ export default function IslandPage() {
   const navigate = useNavigate();
   const { islands, loading, setIslands, setLoading } = useIslandStore();
   const [operating, setOperating] = useState(false);
+  const hasFetchedRef = useRef(false);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
-    fetchIslands();
+    // 防止重复请求：只在首次挂载且没有正在请求时执行
+    if (!hasFetchedRef.current && !isFetchingRef.current) {
+      hasFetchedRef.current = true;
+      fetchIslands();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchIslands = async () => {
+    // 防止重复请求
+    if (isFetchingRef.current) {
+      return;
+    }
+    isFetchingRef.current = true;
     setLoading(true);
     try {
       const res = await islandApi.getList();
@@ -34,6 +46,7 @@ export default function IslandPage() {
       console.error("获取据点列表失败:", error);
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
   };
 
