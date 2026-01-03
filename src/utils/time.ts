@@ -48,16 +48,30 @@ export const calculateResourceNeeded = (currentResource: number): number => {
 }
 
 /**
+ * 获取有效的消耗速率
+ * 如果 realResourceRate 为 0（未启动时），使用 resourceRate 作为后备
+ */
+export const getEffectiveRate = (
+  realResourceRate: number,
+  resourceRate: number
+): number => {
+  return realResourceRate > 0 ? realResourceRate : resourceRate
+}
+
+/**
  * 计算当前能量可以运行多少小时
  * @param resource 当前资源数量
  * @param realResourceRate 实际消耗速率（每小时，接口返回的已计算加成）
+ * @param resourceRate 基础消耗速率（作为后备）
  */
 export const calculateRemainingHours = (
   resource: number,
-  realResourceRate: number
+  realResourceRate: number,
+  resourceRate?: number
 ): number => {
-  if (realResourceRate <= 0) return 0
-  return resource / realResourceRate
+  const rate = getEffectiveRate(realResourceRate, resourceRate || realResourceRate)
+  if (rate <= 0) return 0
+  return resource / rate
 }
 
 /**
@@ -65,15 +79,18 @@ export const calculateRemainingHours = (
  * @param crystalAmount 空晶数量
  * @param supplementRate 补充比例（1空晶->n资源）
  * @param realResourceRate 实际消耗速率（每小时）
+ * @param resourceRate 基础消耗速率（作为后备）
  */
 export const calculateSupplementHours = (
   crystalAmount: number,
   supplementRate: number,
-  realResourceRate: number
+  realResourceRate: number,
+  resourceRate?: number
 ): number => {
-  if (realResourceRate <= 0) return 0
+  const rate = getEffectiveRate(realResourceRate, resourceRate || realResourceRate)
+  if (rate <= 0) return 0
   const resourceGain = crystalAmount * supplementRate
-  return resourceGain / realResourceRate
+  return resourceGain / rate
 }
 
 /**
@@ -81,16 +98,19 @@ export const calculateSupplementHours = (
  * @param currentResource 当前资源数量
  * @param supplementRate 补充比例（1空晶->n资源）
  * @param realResourceRate 实际消耗速率（每小时）
+ * @param resourceRate 基础消耗速率（作为后备）
  */
 export const calculateCrystalNeededFor24Hours = (
   currentResource: number,
   supplementRate: number,
-  realResourceRate: number
+  realResourceRate: number,
+  resourceRate?: number
 ): number => {
-  if (realResourceRate <= 0 || supplementRate <= 0) return 0
+  const rate = getEffectiveRate(realResourceRate, resourceRate || realResourceRate)
+  if (rate <= 0 || supplementRate <= 0) return 0
   
   // 24小时需要的资源
-  const resourceNeeded = realResourceRate * 24
+  const resourceNeeded = rate * 24
   // 还需要补充的资源
   const resourceToAdd = resourceNeeded - currentResource
   

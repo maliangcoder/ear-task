@@ -61,7 +61,8 @@ export default function IslandPage() {
     const needed = calculateCrystalNeededFor24Hours(
       island.resource,
       island.supplementRate,
-      island.realResourceRate
+      island.realResourceRate,
+      island.resourceRate  // 后备：未启动时 realResourceRate 可能为 0
     );
     return sum + needed;
   }, 0);
@@ -128,7 +129,8 @@ export default function IslandPage() {
       const needed = calculateCrystalNeededFor24Hours(
         island.resource,
         island.supplementRate,
-        island.realResourceRate
+        island.realResourceRate,
+        island.resourceRate
       );
       return needed > 0;
     });
@@ -165,7 +167,8 @@ export default function IslandPage() {
       const crystalNeeded = calculateCrystalNeededFor24Hours(
         island.resource,
         island.supplementRate,
-        island.realResourceRate
+        island.realResourceRate,
+        island.resourceRate
       );
 
       if (crystalNeeded <= 0) continue;
@@ -201,6 +204,27 @@ export default function IslandPage() {
           await delay(DELAY_MS);
         }
 
+        // 检查是否需要补充资源（必须满足24小时才能启动）
+        const crystalNeeded = calculateCrystalNeededFor24Hours(
+          island.resource,
+          island.supplementRate,
+          island.realResourceRate,
+          island.resourceRate
+        );
+
+        // 如果资源不足24小时，先补充
+        if (crystalNeeded > 0) {
+          const supplementRes = await islandApi.supplement({
+            id: island.id,
+            consume: crystalNeeded,
+          });
+          if (supplementRes.data) {
+            totalCrystalUsed += crystalNeeded;
+          }
+          await delay(DELAY_MS);
+        }
+
+        // 然后启动
         const res = await islandApi.start({ id: island.id, start: true });
         if (res.data) {
           startSuccess++;
@@ -227,12 +251,14 @@ export default function IslandPage() {
     const hasProduction = island.produceNum > 0;
     const remainingHours = calculateRemainingHours(
       island.resource,
-      island.realResourceRate
+      island.realResourceRate,
+      island.resourceRate
     );
     const crystalNeeded = calculateCrystalNeededFor24Hours(
       island.resource,
       island.supplementRate,
-      island.realResourceRate
+      island.realResourceRate,
+      island.resourceRate
     );
 
     let message = "";
@@ -254,6 +280,7 @@ export default function IslandPage() {
 
     setOperating(true);
     try {
+      // 1. 如果有产出先收取
       if (hasProduction) {
         const collectRes = await islandApi.collect({ id: island.id });
         if (collectRes.data) {
@@ -262,8 +289,25 @@ export default function IslandPage() {
             content: `已收取 ${island.produceNum.toFixed(2)} 个产出`,
           });
         }
+        await delay(DELAY_MS);
       }
 
+      // 2. 如果资源不足24小时，先补充
+      if (crystalNeeded > 0) {
+        const supplementRes = await islandApi.supplement({
+          id: island.id,
+          consume: crystalNeeded,
+        });
+        if (supplementRes.data) {
+          Toast.show({
+            icon: "success",
+            content: `已补充 ${crystalNeeded} 空晶`,
+          });
+        }
+        await delay(DELAY_MS);
+      }
+
+      // 3. 然后启动
       const res = await islandApi.start({ id: island.id, start: true });
       if (res.data) {
         Toast.show({ icon: "success", content: "启动成功" });
@@ -326,20 +370,34 @@ export default function IslandPage() {
             </div>
           </div>
           <div className="action-buttons">
-            <button
-              className="action-btn action-btn-collect"
-              onClick={handleCollectAll}
-              disabled={operating || totalProduction <= 0}
-            >
-              {operating ? "处理中..." : "一键收取"}
-            </button>
-            <button
-              className="action-btn action-btn-supplement"
-              onClick={handleSupplementAll}
-              disabled={operating}
-            >
-              {operating ? "处理中..." : allRunning ? "一键补充" : "补充并启动"}
-            </button>
+            {/* 一键收取按钮：有产出时显示 */}
+            {totalProduction > 0 && (
+              <button
+                className="action-btn action-btn-collect"
+                onClick={handleCollectAll}
+                disabled={operating}
+              >
+                {operating ? "处理中..." : "一键收取"}
+              </button>
+            )}
+            {/* 补充/启动按钮：需要补充或有未启动据点时显示 */}
+            {(totalCrystalNeeded > 0 || notStartedCount > 0) && (
+              <button
+                className="action-btn action-btn-supplement"
+                onClick={handleSupplementAll}
+                disabled={operating}
+              >
+                {operating
+                  ? "处理中..."
+                  : allRunning
+                  ? "一键补充"
+                  : "补充并启动"}
+              </button>
+            )}
+            {/* 全部正常时显示状态 */}
+            {totalProduction <= 0 && totalCrystalNeeded <= 0 && allRunning && (
+              <div className="all-good-status">✓ 所有据点运行正常</div>
+            )}
           </div>
         </Card>
 
@@ -349,7 +407,8 @@ export default function IslandPage() {
             const showStartButton = island.status === "UN_USE";
             const remainingHours = calculateRemainingHours(
               island.resource,
-              island.realResourceRate
+              island.realResourceRate,
+              island.resourceRate
             );
 
             return (
